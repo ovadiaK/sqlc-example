@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"github.com/ovadiaK/sqlc-example/store"
 	"log"
 	"reflect"
 
-	"github.com/ovadiaK/sqlc-example/tutorial"
+	"github.com/ovadiaK/sqlc-example/store/tutorial"
 
 	_ "github.com/lib/pq"
 )
@@ -14,10 +16,13 @@ import (
 func run() error {
 	ctx := context.Background()
 
-	db, err := sql.Open("postgres", "user=pqgotest dbname=pqgotest sslmode=verify-full")
+	db, err := sql.Open("postgres", "postgresql://tutorial:abc@172.17.0.2:5432/tutorial?sslmode=disable")
 	if err != nil {
 		return err
 	}
+	fmt.Println("store connected")
+
+	store.Migrate()
 
 	queries := tutorial.New(db)
 
@@ -50,6 +55,7 @@ func run() error {
 }
 
 func main() {
+	fmt.Println("hello world")
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
